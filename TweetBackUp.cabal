@@ -6,32 +6,36 @@ cabal-version: 1.12
 
 name:           TweetBackUp
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/TweetBackUp#readme>
-homepage:       https://github.com/githubuser/TweetBackUp#readme
-bug-reports:    https://github.com/githubuser/TweetBackUp/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2021 Author name here
-license:        BSD3
-license-file:   LICENSE
+description:    Please see the README on GitHub at <https://github.com/SridharRamesh/TweetBackUp#readme>
+homepage:       https://github.com/SridharRamesh/TweetBackUp#readme
+bug-reports:    https://github.com/SridharRamesh/TweetBackUp/issues
+author:         Sridhar Ramesh
+maintainer:     Sridhar Ramesh
 build-type:     Simple
 extra-source-files:
     README.md
-    ChangeLog.md
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/TweetBackUp
+  location: https://github.com/SridharRamesh/TweetBackUp
 
 library
   exposed-modules:
-      Lib
-  other-modules:
-      Paths_TweetBackUp
+      Constants
+      Output
+      Parse
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , attoparsec
+    , base >=4.7 && <5
+    , bytestring
+    , directory
+    , filepath
+    , html-entities
+    , text
+    , utf8-string
   default-language: Haskell2010
 
 executable TweetBackUp-exe
@@ -43,18 +47,13 @@ executable TweetBackUp-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       TweetBackUp
+    , aeson
+    , attoparsec
     , base >=4.7 && <5
-  default-language: Haskell2010
-
-test-suite TweetBackUp-test
-  type: exitcode-stdio-1.0
-  main-is: Spec.hs
-  other-modules:
-      Paths_TweetBackUp
-  hs-source-dirs:
-      test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      TweetBackUp
-    , base >=4.7 && <5
+    , bytestring
+    , directory
+    , filepath
+    , html-entities
+    , text
+    , utf8-string
   default-language: Haskell2010

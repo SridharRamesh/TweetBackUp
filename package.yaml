@@ -1,14 +1,10 @@
 name:                TweetBackUp
 version:             0.1.0.0
 github:              "SridharRamesh/TweetBackUp"
-license:             BSD3
 author:              "Sridhar Ramesh"
-maintainer:          "sramesh@berkeley.edu"
-copyright:           "2021 Sridhar Ramesh"
 
 extra-source-files:
 - README.md
-- ChangeLog.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -21,25 +17,26 @@ description:         Please see the README on GitHub at <https://github.com/Srid
 
 dependencies:
 - base >= 4.7 && < 5
+- aeson
+- text
+- bytestring
+- utf8-string
+- attoparsec
+- directory
+- filepath
+- html-entities
 
 library:
   source-dirs: src
+  # To prevent warning noted at https://github.com/commercialhaskell/stack/issues/5439
+  when:
+  - condition: false
+    other-modules: Paths_TweetBackUp
 
 executables:
   TweetBackUp-exe:
     main:                Main.hs
     source-dirs:         app
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - TweetBackUp
-
-tests:
-  TweetBackUp-test:
-    main:                Spec.hs
-    source-dirs:         test
     ghc-options:
     - -threaded
     - -rtsopts
