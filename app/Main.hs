@@ -1,9 +1,8 @@
 {-# LANGUAGE 
-  OverloadedStrings, 
-  ScopedTypeVariables, 
-  TypeApplications, 
-  RecordWildCards, 
-  ViewPatterns 
+  OverloadedStrings,
+  ScopedTypeVariables,
+  RecordWildCards,
+  ViewPatterns
 #-}
 module Main where
 
@@ -23,8 +22,13 @@ import System.FilePath
 import Data.Text.Lazy.Encoding
 
 main :: IO ()
-main = do
-  inputPath <- generateInputPath
+main = 
+  do
+    inputPath <- generateInputPath
+    outputDirectory <- generateOutputDirectory
+    main' inputPath outputDirectory {- userId -}
+
+main' inputPath outputDirectory {- userId -} = do
   inputBytes <- ByteString.readFile inputPath
   case fileParse inputBytes of
     Fail unconsumedBytes _ _ -> do
@@ -42,15 +46,14 @@ main = do
               datesAndTweets = [(date $ created_at $ head tweets, tweets) | tweets <- groupedTweets]
               datesAndHTML = [(date, makePage date tweets) | (date@Date{..}, tweets) <- datesAndTweets, 
                               printForDate year month dayOfMonth]
-          in do mapM (uncurry writePage) datesAndHTML
-                putStrLn $ "All done!"
-
-writePage Date{..} page = do
-  outputDirectory <- generateOutputDirectory
-  let outputPath = outputDirectory </> (show year) </> (show month) </> (show dayOfMonth) <> ".html"
-  -- We canonicalize the name just for more readable terminal messages in the next line
-  putStrLn $ "Writing output to: " <> outputPath
-  writeFile outputPath page
+          in do mapM_ (uncurry writePage) datesAndHTML
+                putStrLn "All done!"
+  where
+    writePage Date{..} page = do
+      let outputPath = outputDirectory </> (show year) </> (show month) </> (show dayOfMonth) <> ".html"
+      -- We canonicalize the name just for more readable terminal messages in the next line
+      putStrLn $ "Writing output to: " <> outputPath
+      writeFile outputPath page
 
 writeFile path (encodeUtf8 -> content) = do
   createDirectoryIfMissing True $ takeDirectory path

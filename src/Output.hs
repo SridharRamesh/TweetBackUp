@@ -75,7 +75,7 @@ makeTweet tweet@Tweet{..} = separate $ paragraph (Just $ fromStrict id) $ concat
       [horizontalRule <> blockquoteStart <> tweetHeader <> lineBreak <> (fromStrict full_text) <> lineBreak <> lineBreak <> tweetFooter <> blockquoteEnd,
        "Id: " <> (linkify (fromStrict id) (tweetToURL tweet))
       ]
-    tweetHeader = separate $ (avi "avi" aviIcon 50 50) <> "<b>" <> displayName <> "</b> <span class=\"display-name\" title=\"" <> (timestampToText created_at) <> "\"> @RadishHarmers · " <> (dateToText $ date created_at) <> "</span>"
+    tweetHeader = separate $ (avi "avi" aviIcon 50 50) <> "<b>" <> "display name" <> "</b> <span class=\"display-name\" title=\"" <> (timestampToText created_at) <> "\"> " <> "@atName" <> " · " <> (dateToText $ date created_at) <> "</span>"
     tweetFooter = retweetDisplay <> " &nbsp; &nbsp; &nbsp; " <> faveDisplay
     retweetDisplay = (icon "Retweets" retweetIcon 20 20) <> (fromStrict retweet_count)
     faveDisplay = (icon "Likes" likeIcon 20 20) <> (fromStrict favorite_count)

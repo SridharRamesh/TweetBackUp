@@ -5,9 +5,11 @@
   ScopedTypeVariables, 
   DuplicateRecordFields, 
   ViewPatterns
-#-}
+ #-}
 module Parse (Tweet(..), Timestamp(..), Date(..), date, fileParse, extractTweets) where
 
+import Time
+import Tweet
 import Data.Aeson hiding ((<?>))
 import Data.Aeson.TH
 import qualified Data.Attoparsec.ByteString.Lazy as LazyStringParse -- All our parsers work on ByteStrings rather than Text, because this is what Data.Aeson uses
@@ -61,23 +63,6 @@ parseNDigits n = parseNDigits' n
 parseTwoDigits = parseNDigits 2
 parseFourDigits = parseNDigits 4
 
-data Timestamp = Timestamp {
-  year :: Int,
-  month :: Int,
-  dayOfMonth :: Int,
-  hour :: Int,
-  minute :: Int,
-  second :: Int
-} deriving (Show, Eq, Ord)
-
-data Date = Date {
-  year :: Int,
-  month :: Int,
-  dayOfMonth :: Int
-} deriving (Eq, Ord)
-
-date Timestamp{..} = Date{..}
-
 parseTimestamp = do
   parseDayOfWeek -- We ignore the result
   parseSpace
@@ -106,19 +91,9 @@ textParserToJSONParser typeName textParser = withText typeName $ \text ->
 instance FromJSON Timestamp where
   parseJSON = textParserToJSONParser "Timestamp" parseTimestamp
 
-data Tweet = Tweet {
-  id :: Text,
-  full_text  :: Text,
-  created_at :: Timestamp,
-  favorite_count :: Text,
-  retweet_count :: Text,
-  in_reply_to_status_id :: Maybe Text,
-  in_reply_to_user_id :: Maybe Text,
-  in_reply_to_screen_name :: Maybe Text
-} deriving (Show)
 $(deriveFromJSON defaultOptions ''Tweet)
 
-data BoxedTweet = BoxedTweet {
+newtype BoxedTweet = BoxedTweet {
   tweet :: Tweet
 } deriving (Show)
 $(deriveFromJSON defaultOptions{rejectUnknownFields = True} ''BoxedTweet)
