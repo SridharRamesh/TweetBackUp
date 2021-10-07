@@ -110,6 +110,7 @@ makePage date tweets =
   <>
   pageFooter
 
+atName = "RadishHarmers" -- To be replaced with input user ID
 isSelfRT tweet = (Data.String.fromString ("RT @" <> atName) :: StrictText.Text) `StrictText.isPrefixOf` (full_text tweet)
 isRT tweet = (Data.String.fromString ("RT @") :: StrictText.Text) `StrictText.isPrefixOf` (full_text tweet)
 isReply tweet = case in_reply_to_status_id tweet of Nothing -> False; Just _ -> True

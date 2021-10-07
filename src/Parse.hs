@@ -91,18 +91,14 @@ textParserToJSONParser typeName textParser = withText typeName $ \text ->
 instance FromJSON Timestamp where
   parseJSON = textParserToJSONParser "Timestamp" parseTimestamp
 
-$(deriveFromJSON defaultOptions ''Tweet)
-
 newtype BoxedTweet = BoxedTweet {
   tweet :: Tweet
-} deriving (Show)
+}
+$(deriveFromJSON defaultOptions ''Tweet)
 $(deriveFromJSON defaultOptions{rejectUnknownFields = True} ''BoxedTweet)
 
-newtype FileTop = FileTop [BoxedTweet]
-$(deriveFromJSON defaultOptions ''FileTop)
-
 extractTweets bytes = case (fromJSON bytes) of
-  Success (FileTop boxedTweets) -> Success (map tweet boxedTweets)
+  Success [boxedTweets] -> Success (map tweet boxedTweets)
   Error error -> Error error -- Re-exporting the error at a different type
 
 fileParse = LazyStringParse.parse json
