@@ -10,7 +10,7 @@ RTs of others, self-RTS, listing self-RTs of current tweet
 Embedded media
 Links
 Tweets with multiple spaces
-Check that tweets with ampersands, quotes, or multi-spaces work properly.
+Check that tweets with ampersands, quotes, emojis, or multi-spaces work properly.
 
 
 Tooltips on icons
@@ -20,5 +20,6 @@ Next day/last day/indexes
 Get rid of extra line at bottom of tweet boxes
 Margins betewen RT and Like counters
 Fix avi file location
-Bold and grey display name / screen name / timestamp
-Size avi properly through CSS
+Bold and grey display name / screen name / timestamp through CSS
+
+Make README with instructions for other users.

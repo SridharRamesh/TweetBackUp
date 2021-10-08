@@ -120,7 +120,7 @@ cssFile = baseURL <> "styles.css"
 iconFolder = baseURL <> "icons/"
 likeIcon = iconFolder <> "Like.png"
 retweetIcon = iconFolder <> "Retweet.png"
-aviIcon = iconFolder <> "Avi.jpg"
+aviIcon = iconFolder <> "avi.jpg"
 banner = iconFolder <> "Banner.jpg"
 
 -- TODO: Linkify other people's tweets back to twitter.com.
