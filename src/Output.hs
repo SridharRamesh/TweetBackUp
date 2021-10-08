@@ -13,6 +13,7 @@ import Time
 import Tweet
 
 import qualified Data.ByteString.Lazy as ByteString
+import qualified Data.ByteString.Lazy.UTF8 as UTF8
 
 import Text.Blaze.Html5 as HTML
 import Text.Blaze.Html5 as HTMLBase
@@ -60,11 +61,20 @@ otherwisePreEscapedTextWithNewlines x = sequence_ $ List.intersperse br [preEsca
 
 nbsp = preEscapedText "&nbsp;"
 
+avi = img ! src (textValue aviIcon)
+
 makeTweet :: Tweet -> Html
 makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
   hr
   blockquoter $ do
-    text "Tweet header"
+    avi
+    -- Note: The pretty renderer will automatically insert new lines between the following sequential lines of text, 
+    -- which will become interpreted as spaces. TODO: Make this more robust to choice of renderer.
+    b $ text name
+    HTMLBase.span ! class_ "grey-text" $ do
+      preEscapedText ("@" <> screen_name)
+      text "·"
+      text (dateToText $ date created_at)
     br
     otherwisePreEscapedTextWithNewlines full_text
     br
@@ -84,6 +94,7 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
       Nothing -> []
       (Just replied_to_id) -> ["In reply to ID: " <> (fromStrict replied_to_id)]
   -}
+  where User{..} = selfUser
 
 makeHtml :: Date -> [Tweet] -> Html
 makeHtml date tweets = html $ do
@@ -97,7 +108,7 @@ makeHtml date tweets = html $ do
     mapM_ makeTweet tweets
 
 makePage :: Date -> [Tweet] -> ByteString.ByteString
-makePage date tweets = fromString $ renderHtml $ makeHtml date tweets
+makePage date tweets = UTF8.fromString $ renderHtml $ makeHtml date tweets
 
 baseURL = "../../"
 cssFile = baseURL <> "styles.css"
