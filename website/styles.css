@@ -37,10 +37,17 @@ blockquote.twitter-tweet a:focus {
   color: grey;
 }
 
-img.icon {
-  vertical-align:text-bottom;
+span.Retweet::before {
+  content: "🔁"
+}
+
+span.Like::before {
+  content: "❤️"
 }
 
 img.avi {
-  vertical-align:middle;
+  border-radius: 50%;
+  max-height: 50px;
+  max-width: 50px;
+  float: left;
 }
