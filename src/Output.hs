@@ -51,7 +51,7 @@ linkify content url = (a ! href url) $ (text content)
 
 comment x = preEscapedText ("<!-- " <> x <> " -->")
 
-nothing = preEscapedText ""
+nothing = return ()
 
 iconicCounter icon count = 
   do HTMLBase.span ! class_ (textValue icon) ! alt (textValue (icon <> " icon")) $ nothing
@@ -61,13 +61,11 @@ otherwisePreEscapedTextWithNewlines x = sequence_ $ List.intersperse br [preEsca
 
 nbsp = preEscapedText "&nbsp;"
 
-avi = img ! src (textValue aviIcon)
-
 makeTweet :: Tweet -> Html
 makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
   hr
   blockquoter $ do
-    avi
+    img ! class_ "avi" ! src (textValue aviIcon)
     -- Note: The pretty renderer will automatically insert new lines between the following sequential lines of text, 
     -- which will become interpreted as spaces. TODO: Make this more robust to choice of renderer.
     b $ text name
@@ -85,15 +83,22 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
   br
   text "Id: "
   linkify tweetID (textValue $ tweetToURL tweet)
-  {-
-    tweetHeader = separate $ (avi "avi" aviIcon 50 50) <> "<b>" <> "display name" <> "</b> <span class=\"display-name\" title=\"" <> (timestampToText created_at) <> "\"> " <> "@atName" <> " · " <> (dateToText $ date created_at) <> "</span>"
-    tweetFooter = retweetDisplay <> " &nbsp; &nbsp; &nbsp; " <> faveDisplay
-    retweetDisplay = (icon "Retweets" retweetIcon 20 20) <> (fromStrict retweet_count)
-    faveDisplay = (icon "Likes" likeIcon 20 20) <> (fromStrict favorite_count)
-    replyElements = case in_reply_to_status_id of
-      Nothing -> []
-      (Just replied_to_id) -> ["In reply to ID: " <> (fromStrict replied_to_id)]
-  -}
+  br
+  text "Timestamp: "
+  text $ timestampToText $ created_at
+  br
+  case (in_reply_to_status_id, in_reply_to_screen_name) of
+    (Nothing, Nothing) -> nothing
+    (Just status_id, Just screen_name) -> do 
+      text "In reply to user: "
+      text ("@" <> screen_name)
+      br
+      text "In reply to tweet ID: "
+      linkify status_id (textValue $ "https://twitter.com/" <> screen_name <> "/status/" <> status_id)
+    _ -> do 
+      text "Anomaly detected in Twitter archive. Some but not all reply information was presented."
+      br
+      text "Full tweet provided was: " <> preEscapedText (show tweet)
   where User{..} = selfUser
 
 makeHtml :: Date -> [Tweet] -> Html
@@ -103,7 +108,7 @@ makeHtml date tweets = html $ do
     comment "This page was generated from Tweet Back Up."
     link ! rel "stylesheet" ! href (textValue cssFile)
   body $ do
-    text $ "These are all the tweets and replies that I made on " <> (dateToText date) <> ":"
+    text $ "These are all the tweets and replies that @" <> screen_name selfUser <> " made on " <> (dateToText date) <> ":"
     br
     mapM_ makeTweet tweets
 
