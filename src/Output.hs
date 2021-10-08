@@ -53,8 +53,10 @@ comment x = preEscapedText ("<!-- " <> x <> " -->")
 
 nothing = return ()
 
+spanClass className = HTMLBase.span ! class_ (textValue className)
+
 iconicCounter icon count = 
-  do HTMLBase.span ! class_ (textValue icon) ! alt (textValue (icon <> " icon")) $ nothing
+  do spanClass icon ! alt (textValue (icon <> " icon")) $ nothing
      text count
 
 otherwisePreEscapedTextWithNewlines x = sequence_ $ List.intersperse br [preEscapedText line | line <- split (== '\n') x]
@@ -68,9 +70,9 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
     img ! class_ "avi" ! src (textValue aviIcon)
     -- Note: The pretty renderer will automatically insert new lines between the following sequential lines of text, 
     -- which will become interpreted as spaces. TODO: Make this more robust to choice of renderer.
-    b $ text name
-    HTMLBase.span ! class_ "grey-text" $ do
-      preEscapedText ("@" <> screen_name)
+    spanClass "display-name" $ text name
+    spanClass "at-name" $ preEscapedText ("@" <> screen_name)
+    spanClass "timestamp" $ do
       text "·"
       text (dateToText $ date created_at)
     br

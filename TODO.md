@@ -20,6 +20,5 @@ Next day/last day/indexes
 Get rid of extra line at bottom of tweet boxes
 Margins betewen RT and Like counters
 Fix avi file location
-Bold and grey display name / screen name / timestamp through CSS
 
 Make README with instructions for other users.
