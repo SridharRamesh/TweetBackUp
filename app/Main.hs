@@ -30,8 +30,8 @@ import Prelude hiding (writeFile)
 main :: IO ()
 main = 
   do
-    inputFile <- canonicalizePath "ignore/raw/FullTweetArchive.txt"
-    outputDirectory <- canonicalizePath "ignore/website/"
+    inputFile <- canonicalizePath "website/raw/FullTweetArchive.txt"
+    outputDirectory <- canonicalizePath "website/"
     let selfUser = User{id = "3118488162", screen_name = "RadishHarmers", name = "Sridhar Ramesh"}
     main' inputFile outputDirectory selfUser
 
