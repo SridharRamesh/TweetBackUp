@@ -15,11 +15,16 @@ import Tweet
 import qualified Data.ByteString.Lazy as ByteString
 
 import Text.Blaze.Html5 as HTML
+import Text.Blaze.Html5 as HTMLBase
 import Text.Blaze.Html5.Attributes as HTML
+import Text.Blaze.Html5.Attributes as HTMLAttributes
 import Text.Blaze.Html.Renderer.Pretty
 
 import Data.String
 import Data.List as List
+
+-- TODO: Take this from main
+selfUser = User{id = "3118488162", screen_name = "RadishHarmers", name = "Sridhar Ramesh"}
 
 show x = Data.String.fromString $ Prelude.show x
 
@@ -45,12 +50,15 @@ linkify content url = (a ! href url) $ (text content)
 
 comment x = preEscapedText ("<!-- " <> x <> " -->")
 
-{-
-icon altText imageURL width height = "<img class=\"icon\" src=\"" <> imageURL <> "\" alt=\"" <> altText <> "\" width=\"" <> (show width) <> "\" height=\"" <> (show height) <> "\">\n"
-avi altText imageURL width height = "<img class=\"avi\" src=\"" <> imageURL <> "\" alt=\"" <> altText <> "\" width=\"" <> (show width) <> "\" height=\"" <> (show height) <> "\">\n"
--}
+nothing = preEscapedText ""
+
+iconicCounter icon count = 
+  do HTMLBase.span ! class_ (textValue icon) ! alt (textValue (icon <> " icon")) $ nothing
+     text count
 
 otherwisePreEscapedTextWithNewlines x = sequence_ $ List.intersperse br [preEscapedText line | line <- split (== '\n') x]
+
+nbsp = preEscapedText "&nbsp;"
 
 makeTweet :: Tweet -> Html
 makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
@@ -61,7 +69,9 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
     otherwisePreEscapedTextWithNewlines full_text
     br
     br
-    text "Tweet footer"
+    HTMLBase.span ! class_ (textValue "counters") $ do
+      iconicCounter "Retweet" retweet_count
+      iconicCounter "Like" favorite_count
   br
   text "Id: "
   linkify tweetID (textValue $ tweetToURL tweet)

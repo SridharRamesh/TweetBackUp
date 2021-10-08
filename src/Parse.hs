@@ -99,10 +99,10 @@ instance FromJSON Timestamp where
 newtype BoxedTweet = BoxedTweet {
   tweet :: Tweet
 }
+$(deriveFromJSON defaultOptions{rejectUnknownFields = True} ''BoxedTweet)
+$(deriveFromJSON defaultOptions ''Tweet)
 $(deriveFromJSON defaultOptions ''Entities)
 $(deriveFromJSON defaultOptions ''UserMention)
-$(deriveFromJSON defaultOptions ''Tweet)
-$(deriveFromJSON defaultOptions{rejectUnknownFields = True} ''BoxedTweet)
 
 extractTweets bytes = case fromJSON bytes of
   Success (boxedTweets :: [BoxedTweet]) -> Success (map tweet boxedTweets)

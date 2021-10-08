@@ -19,9 +19,9 @@ data Tweet = Tweet {
   created_at :: Timestamp,
   favorite_count :: Text,
   retweet_count :: Text,
-  in_reply_to_status_id :: Maybe Text,
-  in_reply_to_user_id :: Maybe Text,
-  in_reply_to_screen_name :: Maybe Text,
+  in_reply_to_status_id :: Maybe Text, -- Tweet numeric ID
+  in_reply_to_user_id :: Maybe Text, -- User numeric ID
+  in_reply_to_screen_name :: Maybe Text, -- User at name, without the @
   entities :: Entities
 } deriving (Show)
 tweetID Tweet{id = x} = x
@@ -34,6 +34,14 @@ data UserMention = UserMention {
   id :: Text
 } deriving (Show)
 userMentionID UserMention{id = x} = x
+
+-- Not a Twitter archive type. My own made up type.
+-- However, I have copied the field names used by Twitter for similar purposes.
+data User = User {
+  id :: Text, -- Numeric ID
+  screen_name :: Text, -- At name, without the @
+  name :: Text -- Display name
+}
 
 isAnyRT tweet = "RT @" `Text.isPrefixOf` (full_text tweet)
 isSelfRT selfID tweet@Tweet{entities = Entities{user_mentions = [UserMention{id = mentionID}]}} 

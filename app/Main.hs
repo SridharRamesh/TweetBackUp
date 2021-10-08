@@ -32,10 +32,10 @@ main =
   do
     inputFile <- canonicalizePath "ignore/raw/FullTweetArchive.txt"
     outputDirectory <- canonicalizePath "ignore/website/"
-    let selfID = "3118488162"
-    main' inputFile outputDirectory selfID
+    let selfUser = User{id = "3118488162", screen_name = "RadishHarmers", name = "Sridhar Ramesh"}
+    main' inputFile outputDirectory selfUser
 
-main' inputFile outputDirectory selfID = do
+main' inputFile outputDirectory selfUser = do
   inputBytes <- ByteString.readFile inputFile
   case fileParse inputBytes of
     Fail unconsumedBytes _ _ -> do
@@ -60,7 +60,6 @@ main' inputFile outputDirectory selfID = do
   where
     writePage Date{..} page = do
       let outputPath = outputDirectory </> show year </> show month </> (show dayOfMonth <> ".html")
-      -- We canonicalize the name just for more readable terminal messages in the next line
       putStrLn $ "Writing output to: " <> outputPath
       writeFile outputPath page
 
