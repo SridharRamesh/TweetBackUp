@@ -54,7 +54,8 @@ main' inputFile outputDirectory selfID = do
       case extractTweets jsonObject of
         Error errorString -> putStrLn $ "Tweets parse error: " ++ errorString
         Success tweets -> 
-          let orderedTweets = sortBy (compare `on` created_at) tweets
+          let filteredTweets = filter (not . isAnyRT) tweets -- Eventually we'll allow non-self-RTs in here
+              orderedTweets = sortBy (compare `on` created_at) filteredTweets
               groupedTweets = groupBy ((==) `on` (date . created_at)) orderedTweets
               datesAndHTMLBytestring = 
                 [(tweetsDate, makePage tweetsDate tweets) 
@@ -70,8 +71,5 @@ main' inputFile outputDirectory selfID = do
       writeFile outputPath page
 
 writeFile path content = do
-  {-
   createDirectoryIfMissing True $ takeDirectory path
   ByteString.writeFile path content
-  -}
-  ByteString.putStr content

@@ -99,6 +99,8 @@ instance FromJSON Timestamp where
 newtype BoxedTweet = BoxedTweet {
   tweet :: Tweet
 }
+$(deriveFromJSON defaultOptions ''Entities)
+$(deriveFromJSON defaultOptions ''UserMention)
 $(deriveFromJSON defaultOptions ''Tweet)
 $(deriveFromJSON defaultOptions{rejectUnknownFields = True} ''BoxedTweet)
 

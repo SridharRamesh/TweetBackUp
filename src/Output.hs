@@ -16,7 +16,9 @@ import qualified Data.ByteString.Lazy as ByteString
 
 import Text.Blaze.Html5 as HTML
 import Text.Blaze.Html5.Attributes as HTML
-import Text.Blaze.Html.Renderer.Utf8
+import Text.Blaze.Html.Renderer.Pretty
+
+import Data.String
 
 show x = Data.String.fromString $ Prelude.show x
 
@@ -47,6 +49,8 @@ icon altText imageURL width height = "<img class=\"icon\" src=\"" <> imageURL <>
 avi altText imageURL width height = "<img class=\"avi\" src=\"" <> imageURL <> "\" alt=\"" <> altText <> "\" width=\"" <> (show width) <> "\" height=\"" <> (show height) <> "\">\n"
 -}
 
+sourceLineBreak = text "\n"
+
 makeTweet :: Tweet -> Html
 makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
   hr
@@ -57,6 +61,7 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
     br
     br
     text "Tweet footer"
+  br
   text "Id: "
   linkify tweetID (textValue $ tweetToURL tweet)
   {-
@@ -78,18 +83,12 @@ makeHtml date tweets = html $ do
   body $ do
     text "These are all the tweets and replies that I made on "
     text $ dateToText date
+    text ":"
     br
-    mapM_ makeTweet [tweet | tweet <- tweets, not (isAnyRT tweet)]
+    mapM_ makeTweet tweets
 
 makePage :: Date -> [Tweet] -> ByteString.ByteString
-makePage date tweets = renderHtml $ makeHtml date tweets
-
-atName = "RadishHarmers" -- To be replaced with input user ID
-isSelfRT tweet = (Data.String.fromString ("RT @" <> atName) :: StrictText.Text) `StrictText.isPrefixOf` (full_text tweet)
-isAnyRT tweet = (Data.String.fromString ("RT @") :: StrictText.Text) `StrictText.isPrefixOf` (full_text tweet)
-isReply tweet = case in_reply_to_status_id tweet of Nothing -> False; Just _ -> True
--- Should detect self-replies; i.e., threads. Should also perhaps detect forward on threads.
-containsMultiSpace tweet = (Data.String.fromString ("  ") :: StrictText.Text) `StrictText.isInfixOf` (full_text tweet)
+makePage date tweets = fromString $ renderHtml $ makeHtml date tweets
 
 baseURL = "../../"
 cssFile = baseURL <> "styles.css"
@@ -100,4 +99,4 @@ aviIcon = iconFolder <> "Avi.jpg"
 banner = iconFolder <> "Banner.jpg"
 
 -- TODO: Linkify other people's tweets back to twitter.com.
-tweetToURL tweet = baseURL <> (dateToURL $ date $ created_at tweet) <> "#" <> (Tweet.id tweet)
+tweetToURL Tweet{id = tweetID, ..} = baseURL <> (dateToURL $ date $ created_at) <> "#" <> tweetID
