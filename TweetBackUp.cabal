@@ -14,6 +14,8 @@ maintainer:     Sridhar Ramesh
 build-type:     Simple
 extra-source-files:
     README.md
+    CHANGELOG.md
+    TODO.md
 
 source-repository head
   type: git
@@ -21,7 +23,6 @@ source-repository head
 
 library
   exposed-modules:
-      Constants
       Output
       Parse
       Time
@@ -32,6 +33,7 @@ library
       aeson
     , attoparsec
     , base >=4.7 && <5
+    , blaze-html
     , bytestring
     , directory
     , filepath
@@ -51,6 +53,7 @@ executable TweetBackUp-exe
     , aeson
     , attoparsec
     , base >=4.7 && <5
+    , blaze-html
     , bytestring
     , directory
     , filepath

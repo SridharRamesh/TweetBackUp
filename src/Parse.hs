@@ -5,16 +5,21 @@
   ScopedTypeVariables, 
   DuplicateRecordFields, 
   ViewPatterns
- #-}
-module Parse (Tweet(..), Timestamp(..), Date(..), date, fileParse, extractTweets) where
+  #-}
+module Parse (
+  fileParse, 
+  extractTweets
+) where
 
 import Time
 import Tweet
+
 import Data.Aeson hiding ((<?>))
 import Data.Aeson.TH
 import qualified Data.Attoparsec.ByteString.Lazy as LazyStringParse -- All our parsers work on ByteStrings rather than Text, because this is what Data.Aeson uses
 import Data.Attoparsec.Text.Lazy
 import Data.Text hiding (map)
+
 import Data.List
 import Data.Maybe
 import Data.String
@@ -58,7 +63,7 @@ parseNDigits' n =
      lastDigit <- parseSingleDigit
      return (10 * prefix + lastDigit)
 parseNDigits n = parseNDigits' n
-  <?> ((show n) <> " digits")
+  <?> (show n <> " digits")
 
 parseTwoDigits = parseNDigits 2
 parseFourDigits = parseNDigits 4
@@ -85,7 +90,7 @@ parseTimestamp = do
 
 textParserToJSONParser typeName textParser = withText typeName $ \text ->
   case parseOnly textParser text of
-    (Left description) -> fail $ "Failure in parsing " <> typeName <> "; on text: " <> (unpack text) <> "; error description: " <> description
+    (Left description) -> fail $ "Failure in parsing " <> typeName <> "; on text: " <> unpack text <> "; error description: " <> description
     (Right x) -> return x
 
 instance FromJSON Timestamp where
@@ -97,8 +102,8 @@ newtype BoxedTweet = BoxedTweet {
 $(deriveFromJSON defaultOptions ''Tweet)
 $(deriveFromJSON defaultOptions{rejectUnknownFields = True} ''BoxedTweet)
 
-extractTweets bytes = case (fromJSON bytes) of
-  Success [boxedTweets] -> Success (map tweet boxedTweets)
+extractTweets bytes = case fromJSON bytes of
+  Success (boxedTweets :: [BoxedTweet]) -> Success (map tweet boxedTweets)
   Error error -> Error error -- Re-exporting the error at a different type
 
 fileParse = LazyStringParse.parse json

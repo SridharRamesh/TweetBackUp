@@ -17,6 +17,6 @@ data Date = Date {
   year :: Int,
   month :: Int,
   dayOfMonth :: Int
-} deriving (Eq, Ord)
+} deriving (Show, Eq, Ord)
 
 date Timestamp{..} = Date{..}

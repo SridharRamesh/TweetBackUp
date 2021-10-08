@@ -3,6 +3,8 @@ module Tweet where
 import Data.Text
 import Time
 
+-- All field names in the following exactly match those used in Twitter 
+-- JSON archives.
 data Tweet = Tweet {
   id :: Text,
   full_text  :: Text,
