@@ -19,6 +19,7 @@ import Text.Blaze.Html5.Attributes as HTML
 import Text.Blaze.Html.Renderer.Pretty
 
 import Data.String
+import Data.List as List
 
 show x = Data.String.fromString $ Prelude.show x
 
@@ -42,14 +43,14 @@ blockquoter =
 
 linkify content url = (a ! href url) $ (text content)
 
-comment x = preEscapedText ("<!-- " <> x <> " -->\n")
+comment x = preEscapedText ("<!-- " <> x <> " -->")
 
 {-
 icon altText imageURL width height = "<img class=\"icon\" src=\"" <> imageURL <> "\" alt=\"" <> altText <> "\" width=\"" <> (show width) <> "\" height=\"" <> (show height) <> "\">\n"
 avi altText imageURL width height = "<img class=\"avi\" src=\"" <> imageURL <> "\" alt=\"" <> altText <> "\" width=\"" <> (show width) <> "\" height=\"" <> (show height) <> "\">\n"
 -}
 
-sourceLineBreak = text "\n"
+otherwisePreEscapedTextWithNewlines x = sequence_ $ List.intersperse br [preEscapedText line | line <- split (== '\n') x]
 
 makeTweet :: Tweet -> Html
 makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
@@ -57,7 +58,7 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
   blockquoter $ do
     text "Tweet header"
     br
-    text full_text
+    otherwisePreEscapedTextWithNewlines full_text
     br
     br
     text "Tweet footer"
@@ -81,9 +82,7 @@ makeHtml date tweets = html $ do
     comment "This page was generated from Tweet Back Up."
     link ! rel "stylesheet" ! href (textValue cssFile)
   body $ do
-    text "These are all the tweets and replies that I made on "
-    text $ dateToText date
-    text ":"
+    text $ "These are all the tweets and replies that I made on " <> (dateToText date) <> ":"
     br
     mapM_ makeTweet tweets
 

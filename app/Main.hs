@@ -25,12 +25,6 @@ import System.FilePath
 
 import Prelude hiding (writeFile)
 
-import Text.Blaze.Html5 as HTML hiding (main)
-import Text.Blaze.Html5.Attributes as HTML hiding (icon)
-import Text.Blaze.Html.Renderer.Utf8
-import qualified Data.ByteString.Lazy as ByteString
-import Data.String
-
 -- This currently hardcodes its arguments.
 -- Eventually, it will take them from the command line.
 main :: IO ()
