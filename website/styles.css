@@ -41,6 +41,10 @@ span.Like::before {
   content: "❤️"
 }
 
+span.Like {
+  margin-left: 20px;
+}
+
 span.display-name {
   font-weight: bold;
 }

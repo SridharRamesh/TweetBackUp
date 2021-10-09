@@ -63,6 +63,8 @@ otherwisePreEscapedTextWithNewlines x = sequence_ $ List.intersperse br [preEsca
 
 nbsp = preEscapedText "&nbsp;"
 
+showScreenName screen_name = linkify ("@" <> screen_name) (textValue $ "https://twitter.com/" <> screen_name)
+
 makeTweet :: Tweet -> Html
 makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
   hr
@@ -93,7 +95,7 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
     (Nothing, Nothing) -> nothing
     (Just status_id, Just screen_name) -> do 
       text "In reply to user: "
-      text ("@" <> screen_name)
+      showScreenName screen_name
       br
       text "In reply to tweet ID: "
       linkify status_id (textValue $ "https://twitter.com/" <> screen_name <> "/status/" <> status_id)
@@ -109,10 +111,12 @@ makeHtml date tweets = html $ do
     meta ! httpEquiv "Content-Type" ! content "text/html" ! charset "utf-8"
     comment "This page was generated from Tweet Back Up."
     link ! rel "stylesheet" ! href (textValue cssFile)
+    HTMLBase.title $ preEscapedText $ screen_name <> ": " <> dateToText date
   body $ do
-    text $ "These are all the tweets and replies that @" <> screen_name selfUser <> " made on " <> (dateToText date) <> ":"
+    text $ "These are all the tweets and replies that @" <> screen_name <> " made on " <> (dateToText date) <> ":"
     br
     mapM_ makeTweet tweets
+  where User{..} = selfUser
 
 makePage :: Date -> [Tweet] -> ByteString.ByteString
 makePage date tweets = UTF8.fromString $ renderHtml $ makeHtml date tweets

@@ -18,7 +18,7 @@ Menus for hiding/showing certain categories of tweets, etc.
 Give pages titles
 Next day/last day/indexes
 Get rid of extra line at bottom of tweet boxes
-Margins betewen RT and Like counters
-Fix avi file location
+Fix avi file location ("icon"?)
+Change the way text wraps around the avi
 
 Make README with instructions for other users.
