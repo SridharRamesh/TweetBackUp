@@ -99,10 +99,15 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
       br
       text "In reply to tweet ID: "
       linkify status_id (textValue $ "https://twitter.com/" <> screen_name <> "/status/" <> status_id)
-    _ -> do 
-      text "Anomaly detected in Twitter archive. Some but not all reply information was presented."
+    (Just status_id, Nothing) -> do 
+      text "In reply to user who no longer can be found (RIP)."
       br
-      text "Full tweet provided was: " <> preEscapedText (show tweet)
+      text $ "In reply to tweet ID: " <> status_id
+    (Nothing, Just screen_name) -> do
+      text "In reply to user: "
+      showScreenName screen_name
+      br
+      text "In reply to tweet whose ID can't be found"
   where User{..} = selfUser
 
 makeHtml :: Date -> [Tweet] -> Html
