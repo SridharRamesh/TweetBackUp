@@ -1,7 +1,7 @@
 {-# LANGUAGE 
   OverloadedStrings,
   DuplicateRecordFields,
-  RecordWildCards 
+  RecordWildCards
   #-}
 module Tweet where
 
@@ -27,13 +27,23 @@ data Tweet = Tweet {
 tweetID Tweet{id = x} = x
 
 data Entities = Entities {
-  user_mentions :: [UserMention]
+  user_mentions :: [UserMention],
+  media :: Maybe [MediaEntry]
 } deriving (Show)
 
 data UserMention = UserMention {
   id :: Text
 } deriving (Show)
 userMentionID UserMention{id = x} = x
+
+data MediaEntry = MediaEntry {
+  media_url :: Text,
+  tfype :: Text
+} deriving (Show)
+
+newtype BoxedTweet = BoxedTweet {
+  tweet :: Tweet
+} deriving (Show)
 
 -- Not a Twitter archive type. My own made up type.
 -- However, I have copied the field names used by Twitter for similar purposes.

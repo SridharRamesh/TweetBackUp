@@ -44,6 +44,7 @@ library
 executable TweetBackUp-exe
   main-is: Main.hs
   other-modules:
+      Configuration
       Paths_TweetBackUp
   hs-source-dirs:
       app

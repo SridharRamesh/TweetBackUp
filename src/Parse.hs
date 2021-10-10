@@ -18,7 +18,7 @@ import Data.Aeson hiding ((<?>))
 import Data.Aeson.TH
 import qualified Data.Attoparsec.ByteString.Lazy as LazyStringParse -- All our parsers work on ByteStrings rather than Text, because this is what Data.Aeson uses
 import Data.Attoparsec.Text.Lazy
-import Data.Text hiding (map)
+import Data.Text hiding (map) -- Strict Text because this is what Aeson uses
 
 import Data.List
 import Data.Maybe
@@ -96,13 +96,11 @@ textParserToJSONParser typeName textParser = withText typeName $ \text ->
 instance FromJSON Timestamp where
   parseJSON = textParserToJSONParser "Timestamp" parseTimestamp
 
-newtype BoxedTweet = BoxedTweet {
-  tweet :: Tweet
-}
-$(deriveFromJSON defaultOptions{rejectUnknownFields = True} ''BoxedTweet)
 $(deriveFromJSON defaultOptions ''Tweet)
 $(deriveFromJSON defaultOptions ''Entities)
 $(deriveFromJSON defaultOptions ''UserMention)
+$(deriveFromJSON defaultOptions ''MediaEntry)
+$(deriveFromJSON defaultOptions{rejectUnknownFields = True} ''BoxedTweet)
 
 extractTweets bytes = case fromJSON bytes of
   Success (boxedTweets :: [BoxedTweet]) -> Success (map tweet boxedTweets)

@@ -6,6 +6,7 @@
   #-}
 module Main where
 
+import Configuration
 import Parse
 import Output
 import Time
@@ -34,6 +35,20 @@ main =
     outputDirectory <- canonicalizePath "website/"
     let selfUser = User{id = "3118488162", screen_name = "RadishHarmers", name = "Sridhar Ramesh"}
     main' inputFile outputDirectory selfUser
+
+{-
+readJSONFile file continuation = do
+  inputBytes <- ByteString.readFile file
+  case LazyStringParse.parse json inputBytes of
+    Fail unconsumedBytes _ _ -> do
+      putStrLn $ "Failure parsing file " ++ inputFile ++ " as JSON"
+      putStrLn "Here are the first 10 characters of the failure point:"
+      putStrLn $ UTF8.toString $ ByteString.take 10 unconsumedBytes
+    Done unconsumedBytes jsonObject -> do
+      when (ByteString.length unconsumedBytes > 0) $ 
+           putStrLn ("JSON file had leftover bit: " ++ UTF8.toString unconsumedBytes)
+      continuation jsonObject
+-}
 
 main' inputFile outputDirectory selfUser = do
   inputBytes <- ByteString.readFile inputFile
