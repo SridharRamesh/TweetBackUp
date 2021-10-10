@@ -85,6 +85,8 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
       iconicCounter "Retweet" retweet_count
       iconicCounter "Like" favorite_count
   br
+  let mediaEntries = fromMaybe [] ((\Entities{..} -> media) entities)
+  mapM_ (printMediaEntry tweet) mediaEntries
   text "Id: "
   linkify tweetID (textValue $ tweetToURL tweet)
   br
@@ -110,6 +112,16 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
       text "In reply to tweet whose ID can't be found"
   where User{..} = selfUser
 
+printMediaEntry tweet@Tweet{..} mediaEntry@MediaEntry{..} = case _type of 
+  "photo" -> do 
+    text "Containing photo: "
+    img ! class_ (textValue "tweet-image") ! src (textValue url)
+    br
+    where
+      url = mediaURL <> id <> "-" <> filename
+      filename = List.last $ split (=='/') media_url
+  _ -> nothing
+
 makeHtml :: Date -> [Tweet] -> Html
 makeHtml date tweets = html $ do
   HTML.head $ do
@@ -127,12 +139,10 @@ makePage :: Date -> [Tweet] -> ByteString.ByteString
 makePage date tweets = UTF8.fromString $ renderHtml $ makeHtml date tweets
 
 baseURL = "../../"
+mediaURL = baseURL <> "media/"
 cssFile = baseURL <> "styles.css"
 iconFolder = baseURL <> "icons/"
-likeIcon = iconFolder <> "Like.png"
-retweetIcon = iconFolder <> "Retweet.png"
 aviIcon = iconFolder <> "avi.jpg"
-banner = iconFolder <> "Banner.jpg"
 
 -- TODO: Linkify other people's tweets back to twitter.com.
 tweetToURL Tweet{id = tweetID, ..} = baseURL <> (dateToURL $ date $ created_at) <> "#" <> tweetID

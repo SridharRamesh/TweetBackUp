@@ -38,7 +38,7 @@ userMentionID UserMention{id = x} = x
 
 data MediaEntry = MediaEntry {
   media_url :: Text,
-  tfype :: Text
+  _type :: Text
 } deriving (Show)
 
 newtype BoxedTweet = BoxedTweet {

@@ -99,7 +99,7 @@ instance FromJSON Timestamp where
 $(deriveFromJSON defaultOptions ''Tweet)
 $(deriveFromJSON defaultOptions ''Entities)
 $(deriveFromJSON defaultOptions ''UserMention)
-$(deriveFromJSON defaultOptions ''MediaEntry)
+$(deriveFromJSON defaultOptions{fieldLabelModifier = \x -> if x == "_type" then "type" else x} ''MediaEntry)
 $(deriveFromJSON defaultOptions{rejectUnknownFields = True} ''BoxedTweet)
 
 extractTweets bytes = case fromJSON bytes of
