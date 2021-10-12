@@ -1,4 +1,8 @@
-{-# LANGUAGE OverloadedStrings, RecordWildCards #-}
+{-# LANGUAGE 
+  OverloadedStrings, 
+  RecordWildCards,
+  ViewPatterns
+  #-}
 module Output(makePage) where
 
 import Prelude hiding (unlines, show, id)
@@ -112,10 +116,13 @@ makeTweet tweet@Tweet{id = tweetID, ..} = p ! HTML.id (textValue tweetID) $ do
       text "In reply to tweet whose ID can't be found"
   where User{..} = selfUser
 
+makeImage (textValue -> url) = a ! href url $
+  img ! class_ (textValue "tweet-image") ! src url
+
 printMediaEntry tweet@Tweet{..} mediaEntry@MediaEntry{..} = case _type of 
   "photo" -> do 
     text "Containing photo: "
-    img ! class_ (textValue "tweet-image") ! src (textValue url)
+    makeImage url
     br
     where
       url = mediaURL <> id <> "-" <> filename

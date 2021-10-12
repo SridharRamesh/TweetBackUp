@@ -63,3 +63,8 @@ img.avi {
   max-width: 50px;
   float: left;
 }
+
+img.tweet-image {
+  max-height: 500px;
+  max-width: 500px;
+}
