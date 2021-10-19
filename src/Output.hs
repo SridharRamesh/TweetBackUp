@@ -42,7 +42,7 @@ dateToURL Date{..} = (show year) <> "/" <> (show month) <> "/" <> (show dayOfMon
 timestampToText :: Timestamp -> Text
 timestampToText Timestamp{..} = 
     (show year) <> "-" <> (show month) <> "-" <> (show dayOfMonth)
-    <> " at "
+    <> " at UTC "
     <> (show hour) <> ":" <> (show minute) <> ":" <> (show second)
 
 -- Taken from https://developer.twitter.com/en/docs/twitter-for-websites/embedded-tweets/guides/css-for-embedded-tweets
